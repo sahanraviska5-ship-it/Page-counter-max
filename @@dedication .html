@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>You Will Beat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f3f3f3;
+    }
+
+    .container {
+      text-align: center;
+      width: 500px;
+      padding: 40px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+
+    h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 12px;
+      font-size: 20px;
+      width: 80%;
+      margin-bottom: 20px;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .square-button {
+      width: 150px;
+      height: 150px;
+      background-color: #ff6666;
+      font-size: 20px;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .square-button:hover {
+      background-color: #e65555;
+    }
+
+    .regular-button {
+      padding: 15px 25px;
+      font-size: 18px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .regular-button:hover {
+      background-color: #0056b3;
+    }
+
+    .indicator {
+      margin-top: 30px;
+      width: 100%;
+      height: 40px;
+      background-color: #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: blue;
+      width: 100%;
+      transition: width 0.5s ease;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .record-area {
+      margin-top: 30px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>You Will Beat</h2>
+    <input type="number" id="inputNumber" placeholder="Enter a number" />
+    
+    <div class="button-row">
+      <button class="square-button" onclick="countDown(1)">Count One</button>
+      <button class="regular-button" onclick="countDown(5)">Count Down 5</button>
+      <button class="regular-button" onclick="countDown(10)">Count Down 10</button>
+    </div>
+    
+    <div class="indicator">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+    <div id="message" class="message"></div>
+    
+    <div class="record-area">
+      Pages Done Today: <span id="pagesRecord">0</span>
+    </div>
+  </div>
+
+  <script>
+    let initialNumber = 0;
+    let currentNumber = 0;
+    let pagesDoneToday = localStorage.getItem('pagesDoneToday') ? parseInt(localStorage.getItem('pagesDoneToday')) : 0;
+
+    // Display the stored record of pages done today
+    document.getElementById('pagesRecord').innerText = pagesDoneToday;
+
+    function updateProgressBar() {
+      const progressBar = document.getElementById('progressBar');
+      const message = document.getElementById('message');
+      let percentage = (currentNumber / initialNumber) * 100;
+      if (percentage < 0) percentage = 0;
+      progressBar.style.width = `${percentage}%`;
+
+      if (currentNumber > 0) {
+        message.innerText = `Current Number: ${currentNumber}`;
+      } else {
+        message.innerText = "You are district 1st!";
+        // Update the pages record when finished
+        pagesDoneToday++;
+        localStorage.setItem('pagesDoneToday', pagesDoneToday);
+        document.getElementById('pagesRecord').innerText = pagesDoneToday;
+      }
+    }
+
+    function countDown(step) {
+      const inputElement = document.getElementById('inputNumber');
+      const inputValue = parseInt(inputElement.value);
+
+      if (isNaN(inputValue) || inputValue <= 0) {
+        alert('Please enter a positive number.');
+        return;
+      }
+
+      if (currentNumber === 0) {
+        initialNumber = inputValue;
+        currentNumber = inputValue;
+      }
+
+      currentNumber -= step;
+      if (currentNumber < 0) currentNumber = 0;
+
+      updateProgressBar();
+    }
+  </script>
+</body>
+</html>
